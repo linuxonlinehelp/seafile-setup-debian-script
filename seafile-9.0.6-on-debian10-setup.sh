@@ -77,6 +77,13 @@ sudo systemctl start seafile && sudo systemctl enable seafile
 sudo systemctl start seahub && sudo systemctl enable seahub
 
 
+
+#create self signed SSL CERTIFICARTE
+
+cd /etc/ssl/
+openssl req -newkey rsa:4096 -x509 -sha256 -days 3650 -nodes -out seafile.crt -keyout seafile.key
+
+
 # install Apache2
 apt-get install apache2
 sudo a2enmod rewrite
@@ -85,15 +92,12 @@ sudo a2enmod ssl
 service apache2 restart
 
 
-#install Webmin for easy SQL-Manage and Certs and Server Monitoring (Load)
-
-wget  https://prdownloads.sourceforge.net/webadmin/webmin_1.998_all.deb
-sudo dpkg -i webmin*
-apt-get -f install
-
 
 echo seafile-ok-installed
 exit 0
+
+
+
 #
 #   MANUAL WORK
 #
@@ -110,8 +114,8 @@ RedirectPermanet / https://seafile
   DocumentRoot /var/www
 
   SSLEngine On
-  SSLCertificateFile /etc/webmin/miniserv.pem    
-  SSLCertificateKeyFile /etc/webmin/miniserv.pem 
+  SSLCertificateFile /etc/ssl/seafile.crt
+  SSLCertificateKeyFile /etc/ssl/seafile.key 
 
   Alias /media  /srv/seafile/seafile-server-latest/seahub/media
 
